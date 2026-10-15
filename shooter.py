@@ -65,12 +65,20 @@ class Player:
                
         return data
         
+    
+    def animate(self, anim_speed=3):
         
-
-    def draw(self, display):
-        # pygame.draw.rect(display, self.color, self.rect)
-        display.blit(self.image, self.rect)
-
+        total = len(self.images[self.state])
+        
+        if self.index < total * anim_speed - 1:
+            self.index += 1
+        else:
+            self.index = 0
+            
+        self.image = self.images[self.state][self.index // anim_speed]
+            
+        
+    
     
     def move(self):
         
@@ -102,12 +110,17 @@ class Player:
             if self.velocity == -self.jump_force - 1:
                 self.velocity = self.jump_force
                 self.is_jumping = False
+     
         
-    
+    def draw(self, display):
+    # pygame.draw.rect(display, self.color, self.rect)
+        display.blit(self.image, self.rect)
+
     
     def update(self):
         self.move()
         self.jump()
+        self.animate()
 
 
 background = Background(0, 650)

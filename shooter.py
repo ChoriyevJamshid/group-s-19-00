@@ -29,6 +29,10 @@ class Player:
         self.speed = 10
         self.color = "blue"
         
+        self.is_jumping = False
+        self.jump_force = 9
+        self.velocity = self.jump_force
+        
         self.rect = pygame.Rect(x, y, 50, 50) 
         
 
@@ -50,8 +54,28 @@ class Player:
             self.color = "blue"
     
     
+    def jump(self):
+        
+        if not self.is_jumping:
+            if keyboard()[pygame.K_w]:
+                self.is_jumping = True
+        
+        if self.is_jumping:
+            if self.velocity > 0:
+                self.rect.y -= self.velocity ** 2 // 2
+            else:
+                self.rect.y += self.velocity ** 2 // 2
+            self.velocity -= 1
+            
+            if self.velocity == -self.jump_force - 1:
+                self.velocity = self.jump_force
+                self.is_jumping = False
+        
+    
+    
     def update(self):
         self.move()
+        self.jump()
 
 
 background = Background(0, 650)
@@ -71,9 +95,9 @@ while running:
     clock.tick(30) # FPS
     
     
-    background.draw(display)
-    player.draw(display)
-    player.update()
+    background.draw(display) # yer chizib beradi
+    player.draw(display)     # playerni chizib beradi
+    player.update()          
     
     
     for event in pygame.event.get():

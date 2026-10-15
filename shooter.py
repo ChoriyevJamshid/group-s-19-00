@@ -1,7 +1,7 @@
 import os
 import pygame
 from pygame.image import load
-from pygame.transform import scale
+from pygame.transform import scale, flip
 from pygame.key import get_pressed as keyboard
 
 pygame.init()
@@ -34,11 +34,13 @@ class Player:
         self.index = 0
         
         self.speed = 10
+        self.direction = False
         self.color = "blue"
         
         self.is_jumping = False
         self.jump_force = 9
         self.velocity = self.jump_force
+        
         
         self.image = self.images[self.state][self.index]
         self.rect = self.image.get_rect(topleft=(x, y))
@@ -75,23 +77,28 @@ class Player:
         else:
             self.index = 0
             
-        self.image = self.images[self.state][self.index // anim_speed]
-            
+        image = self.images[self.state][self.index // anim_speed]
+        self.image = flip(image, self.direction, False)
         
-    
     
     def move(self):
         
         if keyboard()[pygame.K_d]:
             self.rect.x += self.speed
-            self.color = "darkblue"
+            # self.color = "darkblue"
+            self.state = 1
+            self.direction = False
+            
         
         elif keyboard()[pygame.K_a]:
             self.rect.x -= self.speed
-            self.color = "darkblue"
+            # self.color = "darkblue"
+            self.state = 1
+            self.direction = True
         
         else:
-            self.color = "blue"
+            # self.color = "blue"
+            self.state = 0
     
     
     def jump(self):

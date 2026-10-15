@@ -1,4 +1,7 @@
+import os
 import pygame
+from pygame.image import load
+from pygame.transform import scale
 from pygame.key import get_pressed as keyboard
 
 pygame.init()
@@ -26,6 +29,10 @@ class Player:
     
     def __init__(self, x, y):
         
+        self.images = self.collect_images()
+        self.state = 0
+        self.index = 0
+        
         self.speed = 10
         self.color = "blue"
         
@@ -33,11 +40,36 @@ class Player:
         self.jump_force = 9
         self.velocity = self.jump_force
         
-        self.rect = pygame.Rect(x, y, 50, 50) 
+        self.image = self.images[self.state][self.index]
+        self.rect = self.image.get_rect(topleft=(x, y))
+    
+    def collect_images(self):
+        
+        data = []
+        
+        for state in ["Idle", "Run", "Jump", "Death"]:
+            
+            states = []
+            images = os.listdir(f"images/player/{state}")
+            
+            for img_file in images:
+                
+                image = load(f"images/player/{state}/{img_file}").convert_alpha()
+                width = image.get_width() * 2
+                print(f"{width = }")
+                heigh = image.get_height() * 2
+                image = scale(image, (width, heigh))
+                states.append(image)
+                
+            data.append(states)
+               
+        return data
+        
         
 
     def draw(self, display):
-        pygame.draw.rect(display, self.color, self.rect)
+        # pygame.draw.rect(display, self.color, self.rect)
+        display.blit(self.image, self.rect)
 
     
     def move(self):
@@ -79,7 +111,7 @@ class Player:
 
 
 background = Background(0, 650)
-player     = Player(x=100, y=600)
+player     = Player(x=100, y=580)
 
 
 running = True

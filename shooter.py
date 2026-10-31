@@ -1,4 +1,7 @@
+import os
 import pygame
+from pygame.image import load
+from pygame.transform import scale, flip
 from pygame.key import get_pressed as keyboard
 
 pygame.init()
@@ -26,36 +29,109 @@ class Player:
     
     def __init__(self, x, y):
         
+        self.images = self.collect_images()
+        self.state = 0
+        self.index = 0
+        
         self.speed = 10
+        self.direction = False
         self.color = "blue"
         
-        self.rect = pygame.Rect(x, y, 50, 50) 
+        self.is_jumping = False
+        self.jump_force = 9
+        self.velocity = self.jump_force
         
-
-    def draw(self, display):
-        pygame.draw.rect(display, self.color, self.rect)
-
+        
+        self.image = self.images[self.state][self.index]
+        self.rect = self.image.get_rect(topleft=(x, y))
+    
+    def collect_images(self):
+        
+        data = []
+        
+        for state in ["Idle", "Run", "Jump", "Death"]:
+            
+            states = []
+            images = os.listdir(f"images/player/{state}")
+            
+            for img_file in images:
+                
+                image = load(f"images/player/{state}/{img_file}").convert_alpha()
+                width = image.get_width() * 2
+                print(f"{width = }")
+                heigh = image.get_height() * 2
+                image = scale(image, (width, heigh))
+                states.append(image)
+                
+            data.append(states)
+               
+        return data
+        
+    
+    def animate(self, anim_speed=3):
+        
+        total = len(self.images[self.state])
+        
+        if self.index < total * anim_speed - 1:
+            self.index += 1
+        else:
+            self.index = 0
+            
+        image = self.images[self.state][self.index // anim_speed]
+        self.image = flip(image, self.direction, False)
+        
     
     def move(self):
         
         if keyboard()[pygame.K_d]:
             self.rect.x += self.speed
-            self.color = "darkblue"
+            # self.color = "darkblue"
+            self.state = 1
+            self.direction = False
+            
         
         elif keyboard()[pygame.K_a]:
             self.rect.x -= self.speed
-            self.color = "darkblue"
+            # self.color = "darkblue"
+            self.state = 1
+            self.direction = True
         
         else:
-            self.color = "blue"
+            # self.color = "blue"
+            self.state = 0
     
+    
+    def jump(self):
+        
+        if not self.is_jumping:
+            if keyboard()[pygame.K_w]:
+                self.is_jumping = True
+        
+        if self.is_jumping:
+            if self.velocity > 0:
+                self.rect.y -= self.velocity ** 2 // 2
+            else:
+                self.rect.y += self.velocity ** 2 // 2
+            self.velocity -= 1
+            
+            if self.velocity == -self.jump_force - 1:
+                self.velocity = self.jump_force
+                self.is_jumping = False
+     
+        
+    def draw(self, display):
+    # pygame.draw.rect(display, self.color, self.rect)
+        display.blit(self.image, self.rect)
+
     
     def update(self):
         self.move()
+        self.jump()
+        self.animate()
 
 
 background = Background(0, 650)
-player     = Player(x=100, y=600)
+player     = Player(x=100, y=580)
 
 
 running = True
@@ -71,9 +147,9 @@ while running:
     clock.tick(30) # FPS
     
     
-    background.draw(display)
-    player.draw(display)
-    player.update()
+    background.draw(display) # yer chizib beradi
+    player.draw(display)     # playerni chizib beradi
+    player.update()          
     
     
     for event in pygame.event.get():

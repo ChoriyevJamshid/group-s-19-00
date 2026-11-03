@@ -52,26 +52,26 @@ range() - sonlar generatori (funksiya)
 
 # print(f"\n{numbers = }")
 
-text = (
-    "Bilet narxlari:"
-    "\n\t5 yoshdan kichik - bepul"
-    "\n\t5 va 18 yosh o'rtasida - 10.000 so'm"
-    "\n\t18dan kattalar - 20.000 so'm"
-)
-print(text)
+# text = (
+#     "Bilet narxlari:"
+#     "\n\t5 yoshdan kichik - bepul"
+#     "\n\t5 va 18 yosh o'rtasida - 10.000 so'm"
+#     "\n\t18dan kattalar - 20.000 so'm"
+# )
+# print(text)
 
-ages = [ 46, 42, 21, 17, 10, 4 ]
-total = 0
+# ages = [ 46, 42, 21, 17, 10, 4 ]
+# total = 0
 
-for i in range(6):
-    age = ages[i]
-    if age < 5:
-        total += 0
-    elif 5 < age < 18:
-        total += 10000
-    else:
-        total += 20000
+# for i in range(6):
+#     age = ages[i]
+#     if age < 5:
+#         total += 0
+#     elif 5 < age < 18:
+#         total += 10000
+#     else:
+#         total += 20000
 
-answer = f"\nUmumiy: {total} so'm"
-print(answer)
+# answer = f"\nUmumiy: {total} so'm"
+# print(answer)
 
